@@ -34,7 +34,7 @@
     "commands": [
       {
         "command": "codesnap.start",
-        "title": "CodeSnap 📸"
+        "title": "CodeSnap-Asep 📸"
       }
     ],
     "menus": {
@@ -44,6 +44,13 @@
         }
       ]
     },
+    "keybindings": [
+      {
+          "mac": "shift+cmd+/",
+          "key": "shift+cmd+/",
+          "command": "codesnap.start"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "CodeSnap",
@@ -69,19 +76,19 @@
         "codesnap.roundedCorners": {
           "scope": "resource",
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Use rounded corners for the window"
         },
         "codesnap.showWindowControls": {
           "scope": "resource",
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Display OS X style window controls"
         },
         "codesnap.showWindowTitle": {
           "scope": "resource",
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Display window title with open folder / file name"
         },
         "codesnap.showLineNumbers": {
@@ -93,7 +100,7 @@
         "codesnap.realLineNumbers": {
           "scope": "resource",
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Start from the selection's line number instead of 1"
         },
         "codesnap.transparentBackground": {

@@ -4,6 +4,8 @@ const vscode = require('vscode');
 const path = require('path');
 const { homedir } = require('os');
 const { readHtml, writeFile, getSettings } = require('./util');
+//debug
+const mylog = vscode.window.createOutputChannel("asep");
 
 const getConfig = () => {
   const editorSettings = getSettings('editor', ['fontLigatures', 'tabSize']);
@@ -44,7 +46,7 @@ const getConfig = () => {
 const createPanel = async (context) => {
   const panel = vscode.window.createWebviewPanel(
     'codesnap',
-    'CodeSnap 📸',
+    'CodeSnap-Asep 📸',
     { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true },
     {
       enableScripts: true,
@@ -87,7 +89,7 @@ const runCommand = async (context) => {
       flash();
       await saveImage(data);
     } else {
-      vscode.window.showErrorMessage(`CodeSnap 📸: Unknown shutterAction "${type}"`);
+      vscode.window.showErrorMessage(`CodeSnap-Asep 📸: Unknown shutterAction "${type}"`);
     }
   });
 
@@ -98,6 +100,23 @@ const runCommand = async (context) => {
 
   const editor = vscode.window.activeTextEditor;
   if (editor && hasOneSelection(editor.selections)) update();
+
+
+  const lines = editor.document.getText().split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].match(/@KDN/)){
+      let start = i-1;
+      let end = i-1;
+      for (; i < lines.length; i++) {
+        if (lines[i].match(/^\}$/)){
+          end = i
+          break;
+        }
+      }
+      editor.selection = new vscode.Selection(new vscode.Position(start, 0), new vscode.Position(end,1))
+      break;
+    }
+  }
 };
 
 module.exports.activate = (context) =>
