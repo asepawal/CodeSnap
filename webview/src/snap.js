@@ -51,3 +51,7 @@ export const takeSnap = async (config) => {
   windowNode.style.resize = 'horizontal';
   setVar('container-background-color', config.backgroundColor);
 };
+
+export const findWord = () => {
+  vscode.postMessage({ type: 'find', data:''});
+};

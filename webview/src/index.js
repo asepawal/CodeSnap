@@ -1,15 +1,17 @@
 import { $, setVar } from './util.js';
 import { pasteCode } from './code.js';
-import { takeSnap, cameraFlashAnimation } from './snap.js';
+import { takeSnap, findWord, cameraFlashAnimation } from './snap.js';
 
 const navbarNode = $('#navbar');
 const windowControlsNode = $('#window-controls');
 const windowTitleNode = $('#window-title');
 const btnSave = $('#save');
+const btnFind = $('#find');
 
 let config;
 
 btnSave.addEventListener('click', () => takeSnap(config));
+btnFind.addEventListener('click', () => findWord());
 
 document.addEventListener('copy', () => takeSnap({ ...config, shutterAction: 'copy' }));
 

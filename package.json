@@ -46,9 +46,9 @@
     },
     "keybindings": [
       {
-          "mac": "shift+cmd+/",
-          "key": "shift+cmd+/",
-          "command": "codesnap.start"
+        "mac": "shift+cmd+/",
+        "key": "shift+cmd+/",
+        "command": "codesnap.start"
       }
     ],
     "configuration": {
@@ -88,7 +88,7 @@
         "codesnap.showWindowTitle": {
           "scope": "resource",
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Display window title with open folder / file name"
         },
         "codesnap.showLineNumbers": {

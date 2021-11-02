@@ -61,18 +61,20 @@ const createPanel = async (context) => {
   return panel;
 };
 
-let lastUsedImageUri = vscode.Uri.file(path.resolve(homedir(), 'Desktop/code.png'));
+const rootPath = vscode.workspace.rootPath;
 const saveImage = async (data) => {
-  const uri = await vscode.window.showSaveDialog({
-    filters: { Images: ['png'] },
-    defaultUri: lastUsedImageUri
-  });
-  lastUsedImageUri = uri;
+  const uri = vscode.Uri.file(path.resolve(rootPath, 'png',  filename + '-' + linenumber + '.png'));
+  mylog.appendLine(uri);
   uri && writeFile(uri.fsPath, Buffer.from(data, 'base64'));
 };
 
 const hasOneSelection = (selections) =>
   selections && selections.length === 1 && !selections[0].isEmpty;
+
+let i = 0;
+let lines;
+let filename;
+let linenumber;
 
 const runCommand = async (context) => {
   const panel = await createPanel(context);
@@ -84,10 +86,35 @@ const runCommand = async (context) => {
 
   const flash = () => panel.webview.postMessage({ type: 'flash' });
 
+  const findAndSelect = async (data) => {
+    for (; i < lines.length; i++) {
+      if (lines[i].match(/@KDN/)) {
+        const start = i - 1;
+        let end = i;
+        for (; i < lines.length; i++) {
+          if (lines[i].match(/^\}$/)) {
+            end = i
+            i = start + 2;
+            break;
+          }
+        }
+        if (i === lines.length) {
+          i = start + 2;
+        }
+        editor.selection = new vscode.Selection(new vscode.Position(start, 0), new vscode.Position(end, 1))
+        linenumber = start+1;
+        await vscode.commands.executeCommand('workbench.action.focusLeftGroup');
+        break;
+      }
+    }
+  };
+
   panel.webview.onDidReceiveMessage(async ({ type, data }) => {
     if (type === 'save') {
       flash();
       await saveImage(data);
+    } else if (type === 'find') {
+      await findAndSelect(data);
     } else {
       vscode.window.showErrorMessage(`CodeSnap-Asep 📸: Unknown shutterAction "${type}"`);
     }
@@ -100,23 +127,11 @@ const runCommand = async (context) => {
 
   const editor = vscode.window.activeTextEditor;
   if (editor && hasOneSelection(editor.selections)) update();
-
-
-  const lines = editor.document.getText().split('\n');
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].match(/@KDN/)){
-      let start = i-1;
-      let end = i-1;
-      for (; i < lines.length; i++) {
-        if (lines[i].match(/^\}$/)){
-          end = i
-          break;
-        }
-      }
-      editor.selection = new vscode.Selection(new vscode.Position(start, 0), new vscode.Position(end,1))
-      break;
-    }
-  }
+  lines = editor.document.getText().split('\n');
+  i = 0;
+  const f = editor.document.fileName.split('/');
+  filename = f[f.length-1]
+  mylog.appendLine(filename);
 };
 
 module.exports.activate = (context) =>
